@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+</style>
+</head>
+<body>
+
+<h2>Dynamic Form Example</h2>
+<div id = "myDynamic">
+    
+</div>
+
+<script>
+/*
+get all the element of Additonal Info
+create a form elemnt
+ForEach through it all
+take first element -- fields (type, name, lable)
+create the element from the method define
+append it to the form element
+repeat this process until all the additional element is over.
+attach the form element to the predefine div, in the DOM.
+*/
+
+
+// Input Json
+myObj = {
+    "additional": [
+        { "type":"input","obj1":"text", "name":"Name", "label": "Name", "id":"nameId" },
+        { "type":"input","obj1":"number", "name":"Mobile", "label": "Mobile", "id":"mobile" },
+        { "type":"input","obj1":"textarea", "name":"address", "label": "Address", "id":"address" },
+        { "type":"input","obj1":"select", "name":"myDropDown", "label": "pickUpTime", "id":"pickUpTime", "optionsObject":[
+        {
+            "value":"first", "text":"first"
+        },
+        {
+            "value":"second", "text":"second"
+        },
+        {
+            "value":"third", "text":"third"
+        },
+        ]
+         }
+    ]
+ }
+
+
+
+var formElment = createForm("form","POST","additionalForm");
+
+var buttonElement = createFormInputSubmitElements("input","submit","submitMe","submitMe");
+ for (i in myObj.additional) {
+    console.log(i);
+    var type = myObj.additional[i].type;
+    var obj1 = myObj.additional[i].obj1;
+    var name = myObj.additional[i].name;
+    var label = myObj.additional[i].label;
+    var id = myObj.additional[i].id;
+    var divWrapper = createHtmlElement("DIV",name,name);
+   // var lableElement = createHtmlElement("label",label,label);
+   var inputElemets = "";
+   //switch starts
+   switch (obj1) {
+    case "text": // for input text
+        inputElemets = createFormInputTextElements(type,"text",name,id);
+        break; 
+    case "number": // for number
+         inputElemets = createFormInputNumberElements(type,"number",name,id);
+        break; 
+    case "select": // for drop down options
+        var optionsObject = myObj.additional[i].optionsObject;
+        inputElemets =createFormDropDownSelectElements("select",name,id,optionsObject);
+        break; 
+    case "textarea": // for textArea
+         inputElemets = createFormInputTextAreaElements("textarea",name,id);
+        break; 
+    default: 
+        text = "Unsupported Type Data!";
+        }
+  
+    //appendTwoElements(divWrapper,lableElement);
+    appendTwoElements(divWrapper,inputElemets);
+    appendTwoElements(formElment,divWrapper);
+}
+appendTwoElements(formElment,buttonElement);
+console.log(formElment);
+appendToBody(formElment);
+
+// ALl importnat functions's Below This, Line
+
+
+// to create the form object
+function createForm(type,actionItem,id){
+var dynamicForm = document.createElement("form");
+dynamicForm.setAttribute('method',type);
+dynamicForm.setAttribute('action',actionItem);
+dynamicForm.setAttribute('id',id);
+return dynamicForm;
+}
+
+
+//form Submit Button components
+function createFormInputSubmitElements(element,type,name,id){
+var inputText = document.createElement(element);
+inputText.type = type;
+inputText.name = name;
+inputText.id = id;
+return inputText;
+}
+
+//form Input components
+function createFormInputTextElements(element,type,name,id){
+var inputText = document.createElement(element);
+inputText.type = type;  // text
+inputText.name = name;
+inputText.id = id;
+inputText.required= "required"
+return inputText;
+}
+
+
+
+//form number components
+function createFormInputNumberElements(element,type,name,id){
+var inputNumber = document.createElement(element);
+inputNumber.type = type; // number
+inputNumber.name = name;
+inputNumber.id = id;
+return inputNumber;
+}
+
+//form textarea components
+function createFormInputTextAreaElements(type,name,id){
+var inputElement = document.createElement(type); // type : textarea
+inputElement.name = name;
+inputElement.id = id;
+return inputElement;
+}
+
+//form drop down  options components
+function createFormDropDownSelectElements(type, name, id, optionsObject){
+var selectParent = document.createElement(type); // type : select
+//firstInput.type = type;
+selectParent.name = name;
+selectParent.id = id;
+for (i in optionsObject) {
+    optionChild = createFormDropDownOptions("option",optionsObject[i].value,optionsObject[i].text);
+    selectParent.appendChild(optionChild);
+}
+return selectParent;
+}
+
+//form drop down  options components
+function createFormDropDownOptions(type,value,text){
+// Use createElement to add an option:
+option = document.createElement(type);
+option.value = value;
+option.text = text;
+return option;
+}
+
+//Html components
+function createHtmlElement(element,name,id){
+var ele = document.createElement(element); // any html element
+ele.id = id;
+ele.innerHTML=name
+return ele;
+}
+
+//append Two Elements
+function appendTwoElements(baseE,toE){
+baseE.appendChild(toE); 
+}
+
+//appaend To Body
+function appendToBody(el){
+document.body.appendChild(el);
+}
+
+
+</script>
+
+</body>
+</html>
